@@ -62,6 +62,103 @@ src/
 
 ---
 
+## Setup & Running Instructions
+
+### 1. **Clone the Repository**
+```bash
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+```
+
+### 2. **Configure Environment Variables**
+- Copy the example environment file and fill in your secrets:
+  ```bash
+  cp .env.example .env
+  ```
+- Edit `.env` to set your database URL, API keys, JWT secret, etc.
+
+### 3. **Build and Run with Docker Compose**
+> This will start the Spring Boot app, PostgreSQL, and optional pgAdmin.
+```bash
+docker compose up --build
+```
+
+- The backend will be accessible at: [http://localhost:8080](http://localhost:8080)
+- Swagger UI: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- Health check: [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
+
+### 4. **(Optional) Run with Local Java**
+If you have Java 17+ and PostgreSQL running locally:
+```bash
+./gradlew bootRun
+# or
+mvn spring-boot:run
+```
+- Configure your local `application.properties` or use environment variables as described above.
+
+### 5. **Database Migrations**
+- Flyway will automatically run migrations at startup.
+
+### 6. **Run Tests**
+```bash
+./gradlew test
+# or
+mvn test
+```
+
+### 7. **Accessing the Application**
+
+- **API Base URL:** `http://localhost:8080/api/v1`
+- **Swagger UI:** [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- **Health Endpoint:** [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
+
+### 8. **Authentication**
+Both JWT token and API key are required.
+- Use an API key from your `.env` file as the header:
+  ```
+  X-API-Key: <your-api-key>
+  ```
+-  And use a valid JWT in the `Authorization` header.
+- ## Generating a JWT Token for Testing
+
+To test endpoints that require JWT authentication, you can generate a JWT token manually using the [jwt.io](https://www.jwt.io/) website:
+
+### Steps
+
+1. **Go to [jwt.io](https://www.jwt.io/)**
+
+2. **Set the JWT Payload (Example):**
+    ```json
+    {
+      "sub": "user-123",
+      "aud": "rag-service",
+      "service": "rag-service",
+      "exp": <FUTURE_EPOCH_SECONDS>
+    }
+    ```
+  - **sub**: Your user ID or identifier.
+  - **aud**: Should match what your backend expects (e.g., `rag-service`).
+  - **service**: (if used) Should match what your backend expects.
+  - **exp**: (Optional) Expiration as a UNIX timestamp in the future.
+
+3. **Set the JWT Secret:**
+  - In the "Verify Signature" section, enter the **same secret** you configured in your backend (`JWT_SECRET` from your `.env` file).
+
+4. **Algorithm:**
+  - Use `HS256` as the signing algorithm (unless your backend expects something else).
+
+5. **Copy the Encoded JWT:**
+  - The output at the top (“Encoded”) is your JWT token.
+
+6. **Use in Requests:**
+  - Pass the token in the `Authorization` header:
+    ```
+    Authorization: Bearer <your-jwt-token>
+
+---
+
+**For more configuration details, see comments in `.env.example` and `docker-compose.yml`.**
+
 ## Quick Start
 
 ```bash
