@@ -7,8 +7,6 @@ import com.rag.chat.entity.ChatSession;
 import com.rag.chat.repository.ChatSessionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,7 +56,7 @@ public class ChatSessionService {
      * @return
      */
     @Cacheable(
-            value = "sessions",
+            value = "sessionPages",
             key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()",
             unless = "#result.isEmpty()"
     )
@@ -74,7 +72,6 @@ public class ChatSessionService {
      * @return
      */
     @Transactional
-    @CachePut(value = "sessions", key = "#session.id")
     @LogExecution(includeArgs = true, includeResult = false, warnThresholdMs = 500)
     public ChatSession update(UUID id, UpdateSessionRequest req){
         ChatSession session = getOrThrow(id);
@@ -86,11 +83,9 @@ public class ChatSessionService {
 
     /**
      * Soft-delete a session
-     * Evict Cache
      * @param id
      */
     @Transactional
-    @CacheEvict(value = "sessions", key = "#sessionId")
     public void delete(UUID id){
         ChatSession session = getOrThrow(id);
         session.setDeletedAt(Instant.now());
