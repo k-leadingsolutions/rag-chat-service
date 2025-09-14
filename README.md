@@ -300,7 +300,8 @@ Queries exclude deleted sessions by default.
 
 ![img.png](img.png)
 > ![img_1.png](img_1.png)
-> ![img_2.png](img_2.png)
+>![img_4.png](img_4.png)
+
 ---
 
 ## Contributing / Feedback
