@@ -16,7 +16,7 @@ WORKDIR /app
 
 RUN adduser --system --uid 1001 appuser
 USER appuser
-ge
+
 COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
