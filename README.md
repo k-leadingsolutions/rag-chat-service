@@ -23,7 +23,7 @@ A backend microservice for storing RAG-based chatbot conversations (sessions + m
 - Create & manage chat sessions (rename, favorite, soft-delete)
 - Store chat messages with roles and optional retrieved context (`JSONB`)
 - Pagination for listing sessions and messages
-- API key and JWT authentication (`X-API-Key`, `Authorization: Bearer ...`)
+- API key and JWT authentication (`x-api-key`, `Authorization: Bearer ...`)
 - Rate limiting per API key (Bucket4j)
 - Flyway migrations
 - OpenAPI / Swagger UI
@@ -117,7 +117,7 @@ mvn test
 Both JWT token and API key are required.
 - Use an API key from your `.env` file as the header:
   ```
-  X-API-Key: <your-api-key>
+  x-api-key: <your-api-key>
   ```
 -  And use a valid JWT in the `Authorization` header.
 - ## Generating a JWT Token for Testing
@@ -178,7 +178,7 @@ docker compose up --build
 
 Send header:
 ```
-X-API-Key: <one of keys from .env API_KEY>
+x-api-key: <one of keys from .env API_KEY>
 ```
 or use a valid JWT via the `Authorization` header.
 
@@ -206,7 +206,7 @@ See Swagger UI for full schema details.
 ```bash
 curl -X POST http://localhost:8080/api/v1/sessions \
   -H 'Content-Type: application/json' \
-  -H 'X-API-Key: change-me' \
+  -H 'x-api-key: change-me' \
   -d '{"userId":"user-123","title":"Embedding Research"}'
 ```
 
@@ -214,7 +214,7 @@ curl -X POST http://localhost:8080/api/v1/sessions \
 ```bash
 curl -X POST http://localhost:8080/api/v1/sessions/{sessionId}/messages \
   -H 'Content-Type: application/json' \
-  -H 'X-API-Key: change-me' \
+  -H 'x-api-key: change-me' \
   -d '{
     "role":"USER",
     "content":"Explain vector similarity",
@@ -225,7 +225,7 @@ curl -X POST http://localhost:8080/api/v1/sessions/{sessionId}/messages \
 
 **List Messages:**
 ```bash
-curl -H 'X-API-Key: change-me' \
+curl -H 'x-api-key: change-me' \
   "http://localhost:8080/api/v1/sessions/{sessionId}/messages?page=0&size=20"
 ```
 
