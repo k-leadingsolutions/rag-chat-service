@@ -14,7 +14,7 @@ public class ApiKeyAuthenticationProvider {
 
     public ApiKeyAuthenticationProvider(Set<String> validApiKeys, String apiKeyHeaderName) {
         this.validApiKeys = Collections.unmodifiableSet(validApiKeys);
-        this.apiKeyHeaderName = apiKeyHeaderName != null ? apiKeyHeaderName : "X-API-Key";
+        this.apiKeyHeaderName = apiKeyHeaderName != null ? apiKeyHeaderName : "x-api-key";
     }
 
     public boolean isValid(String apiKey) {

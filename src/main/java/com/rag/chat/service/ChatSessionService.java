@@ -7,6 +7,7 @@ import com.rag.chat.entity.ChatSession;
 import com.rag.chat.repository.ChatSessionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ public class ChatSessionService {
      * @return
      */
     @Transactional
+    @CacheEvict(value = "sessionPages", allEntries = true)
     @LogExecution(includeArgs = true, includeResult = false, warnThresholdMs = 500)
     public ChatSession create(CreateSessionRequest req) {
         ChatSession session = new ChatSession();
@@ -66,12 +68,27 @@ public class ChatSessionService {
     }
 
     /**
+     * Toggle Favourite Session
+     * @param id
+     * @return
+     */
+    @Transactional
+    @CacheEvict(value = "sessionPages", allEntries = true)
+    @LogExecution(includeArgs = true, includeResult = false, warnThresholdMs = 500)
+    public ChatSession toggleFavorite(UUID id) {
+        ChatSession session = getOrThrow(id);
+        session.setFavorite(!session.isFavorite());
+        return repository.save(session);
+    }
+
+    /**
      * Update a session
      * @param id
      * @param req
      * @return
      */
     @Transactional
+    @CacheEvict(value = "sessionPages", allEntries = true)
     @LogExecution(includeArgs = true, includeResult = false, warnThresholdMs = 500)
     public ChatSession update(UUID id, UpdateSessionRequest req){
         ChatSession session = getOrThrow(id);
@@ -81,11 +98,14 @@ public class ChatSessionService {
         return repository.save(session);
     }
 
+
     /**
      * Soft-delete a session
      * @param id
      */
     @Transactional
+    @CacheEvict(value = "sessionPages", allEntries = true)
+    @LogExecution(includeArgs = true, includeResult = false, warnThresholdMs = 500)
     public void delete(UUID id){
         ChatSession session = getOrThrow(id);
         session.setDeletedAt(Instant.now());

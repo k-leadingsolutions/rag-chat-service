@@ -55,7 +55,7 @@ public class SecurityConfig {
         Set<String> apiKeys = Arrays.stream(apiKeysProperty.split(","))
                 .map(String::trim)
                 .collect(Collectors.toSet());
-        return new ApiKeyAuthenticationProvider(apiKeys, "X-API-Key");
+        return new ApiKeyAuthenticationProvider(apiKeys, "x-api-key");
     }
 
     /**
@@ -78,7 +78,7 @@ public class SecurityConfig {
 
     @Bean
     public RateLimitingFilter rateLimitingFilter() {
-        return new RateLimitingFilter(rateLimitCapacity, rateLimitRefillTokens, Duration.ofMinutes(rateLimitRefillTokens));
+        return new RateLimitingFilter(rateLimitCapacity, rateLimitRefillTokens, Duration.parse(rateLimitRefillPeriod));
     }
 
     /**

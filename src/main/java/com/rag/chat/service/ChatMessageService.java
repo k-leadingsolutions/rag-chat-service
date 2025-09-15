@@ -10,6 +10,7 @@ import com.rag.chat.repository.ChatMessageRepository;
 import com.rag.chat.repository.ChatSessionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ public class ChatMessageService {
     private final ObjectMapper objectMapper;
 
     @Transactional
+    @CacheEvict(value = "chatMessages", allEntries = true)
     @LogExecution(includeArgs = true, includeResult = false, warnThresholdMs = 500)
     public ChatMessage create(UUID sessionId, CreateMessageRequest req) {
         SecurityService.sanitizeInput(req.getContent());

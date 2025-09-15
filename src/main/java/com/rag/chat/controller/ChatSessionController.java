@@ -113,6 +113,20 @@ public class ChatSessionController {
         }
     }
 
+    @Operation(
+            summary = "Toggle favorite status of a session",
+            security = {@SecurityRequirement(name = "bearer_jwt"), @SecurityRequirement(name = "api_key")}
+    )
+    @PreAuthorize("@sessionAccess.canWrite(authentication, #id)")
+    @PutMapping("/{id}/favorite")
+    public SessionResponse toggleFavorite(@PathVariable UUID id) {
+        ChatSession updated = service.toggleFavorite(id);
+        if (log.isDebugEnabled()) {
+            log.debug("Toggled favorite for session id={} now favorite={}", id, updated.isFavorite());
+        }
+        return toResponse(updated);
+    }
+
     private SessionResponse toResponse(ChatSession session) {
         return SessionResponse.builder()
                 .id(session.getId())

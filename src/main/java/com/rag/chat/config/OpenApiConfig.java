@@ -23,7 +23,7 @@ public class OpenApiConfig {
                 SecurityScheme apiKey = new SecurityScheme()
                         .type(SecurityScheme.Type.APIKEY)
                         .in(SecurityScheme.In.HEADER)
-                        .name("X-API-Key")
+                        .name("x-api-key")
                         .description("Internal API Key authentication (REQUIRED: must be combined with JWT Bearer)");
 
                 SecurityScheme bearer = new SecurityScheme()

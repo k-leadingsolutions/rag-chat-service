@@ -11,14 +11,14 @@ class ApiKeyAuthenticationProviderTest {
 
     @Test
     void validApiKeyReturnsTrue() {
-        ApiKeyAuthenticationProvider provider = new ApiKeyAuthenticationProvider(Set.of("abc123", "def456"), "X-API-Key");
+        ApiKeyAuthenticationProvider provider = new ApiKeyAuthenticationProvider(Set.of("abc123", "def456"), "x-api-key");
         assertTrue(provider.isValid("abc123"));
         assertTrue(provider.isValid("def456"));
     }
 
     @Test
     void invalidApiKeyReturnsFalse() {
-        ApiKeyAuthenticationProvider provider = new ApiKeyAuthenticationProvider(Set.of("abc123"), "X-API-Key");
+        ApiKeyAuthenticationProvider provider = new ApiKeyAuthenticationProvider(Set.of("abc123"), "x-api-key");
         assertFalse(provider.isValid("wrongKey"));
         assertFalse(provider.isValid(null));
         assertFalse(provider.isValid(""));
@@ -26,7 +26,7 @@ class ApiKeyAuthenticationProviderTest {
 
     @Test
     void correctHeaderNameReturned() {
-        ApiKeyAuthenticationProvider provider = new ApiKeyAuthenticationProvider(Set.of("a"), "X-API-Key");
-        assertEquals("X-API-Key", provider.getApiKeyHeaderName());
+        ApiKeyAuthenticationProvider provider = new ApiKeyAuthenticationProvider(Set.of("a"), "x-api-key");
+        assertEquals("x-api-key", provider.getApiKeyHeaderName());
     }
 }

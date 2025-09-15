@@ -1,5 +1,6 @@
 package com.rag.chat.service;
 
+import com.rag.chat.aop.LogExecution;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ public class SecurityService {
      * @param input
      * @return
      */
+    @LogExecution(includeArgs = true, includeResult = false, warnThresholdMs = 500)
     public static String sanitizeInput(String input) {
         if (input == null) return null;
         String sanitized = input
