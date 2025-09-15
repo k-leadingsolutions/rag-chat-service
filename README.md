@@ -90,8 +90,6 @@ docker compose up --build
 ### 4. **(Optional) Run with Local Java**
 If you have Java 17+ and PostgreSQL running locally:
 ```bash
-./gradlew bootRun
-# or
 mvn spring-boot:run
 ```
 - Configure your local `application.properties` or use environment variables as described above.
@@ -101,8 +99,6 @@ mvn spring-boot:run
 
 ### 6. **Run Tests**
 ```bash
-./gradlew test
-# or
 mvn test
 ```
 
@@ -147,7 +143,7 @@ To test endpoints that require JWT authentication, you can generate a JWT token 
   - In the "Verify Signature" section, enter the **same secret** you configured in your backend (`JWT_SECRET` from your `.env` file).
 
 4. **Algorithm:**
-  - Use `HS256` as the signing algorithm (unless your backend expects something else).
+  - Use `HS256` as the signing algorithm.
 
 5. **Copy the Encoded JWT:**
   - The output at the top (“Encoded”) is your JWT token.
@@ -280,9 +276,8 @@ Queries exclude deleted sessions by default.
 - **Integration tests:** Real PostgreSQL via Testcontainers.
 - **How to run:**
   ```bash
-  ./gradlew test
+  mvn clean package
   ```
-  or use Maven equivalent.
 
 ---
 
