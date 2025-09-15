@@ -3,8 +3,6 @@
 A backend microservice for storing RAG-based chatbot conversations (sessions + messages) using Spring Boot and PostgreSQL.  
 **Ready for production extension—demonstrates real-world backend patterns and best practices.**
 
----
-
 ## ✨ Why This Project?
 
 - **End-to-end backend skills:** API design, security, persistence, caching, docs, and DevOps.
@@ -12,6 +10,13 @@ A backend microservice for storing RAG-based chatbot conversations (sessions + m
 - **Real-world patterns:** Soft delete, paginated APIs, caching, error handling, and testability.
 
 ---
+## CI/CD Pipeline
+![CI](https://github.com/k-leadingsolutions/rag-chat-service/actions/workflows/ci.yml/badge.svg)](https://github.com/k-leadingsolutions/rag-chat-service/blob/main/.github/workflows/ci.yml)
+
+## How to View
+
+- Click the **CI badge** at the top of this README to see build details and history on GitHub.
+
 
 ## Features
 
