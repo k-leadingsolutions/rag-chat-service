@@ -28,6 +28,15 @@ public class SecurityConfig {
     @Value("${app.security.api-keys}")
     private String apiKeysProperty;
 
+    @Value("${app.ratelimit.capacity}")
+    private long rateLimitCapacity;
+
+    @Value("${app.ratelimit.refillTokens}")
+    private long rateLimitRefillTokens;
+
+    @Value("${app.ratelimit.refillPeriod}")
+    private String rateLimitRefillPeriod; // Will parse to Duration
+
     /**
      * JwtAuthenticationProvider Filter
      * @return
@@ -69,7 +78,7 @@ public class SecurityConfig {
 
     @Bean
     public RateLimitingFilter rateLimitingFilter() {
-        return new RateLimitingFilter(50, 50, Duration.ofMinutes(1));
+        return new RateLimitingFilter(rateLimitCapacity, rateLimitRefillTokens, Duration.ofMinutes(rateLimitRefillTokens));
     }
 
     /**
