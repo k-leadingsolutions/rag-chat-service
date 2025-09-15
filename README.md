@@ -130,10 +130,12 @@ To test endpoints that require JWT authentication, you can generate a JWT token 
 2. **Set the JWT Payload (Example):**
     ```json
     {
-      "sub": "user-123",
-      "aud": "rag-service",
+      "sub": "rag-service",
+      "role": "INTERNAL_SERVICE",
+      "iss": "rag-service",
+      "aud": "chat-bot",
       "service": "rag-service",
-      "exp": <FUTURE_EPOCH_SECONDS>
+      "exp": <FUTURE_EPOCH_SECONDS> i.e 2000000000
     }
     ```
   - **sub**: Your user ID or identifier.
