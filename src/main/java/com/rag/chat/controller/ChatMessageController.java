@@ -1,6 +1,5 @@
 package com.rag.chat.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rag.chat.dto.request.CreateMessageRequest;
 import com.rag.chat.dto.response.MessageResponse;
 import com.rag.chat.dto.response.PageResponse;
@@ -33,7 +32,6 @@ import java.util.UUID;
 public class ChatMessageController {
 
     private final ChatMessageService service;
-    private final ObjectMapper objectMapper;
 
     @Operation(
             summary = "Create a message in a session",

@@ -124,7 +124,7 @@ public class ChatMessageControllerTest {
 
     @Test
     void deserialize_shouldReturnNullForInvalidJson() {
-        ChatMessageController controller = new ChatMessageController(chatMessageService, objectMapper);
+        ChatMessageController controller = new ChatMessageController(chatMessageService);
         String invalidJson = "{ invalid json }";
         JsonNode node = deserialize(invalidJson);
         assertNull(node);
