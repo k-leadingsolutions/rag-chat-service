@@ -78,7 +78,7 @@ cd your-repo
 ### 2. **Configure Environment Variables**
 - Copy the example environment file and fill in your secrets:
   ```bash
-  cp .env.example .env
+  cp .env-example .env
   ```
 - Edit `.env` to set your database URL, API keys, JWT secret, etc.
 
@@ -160,12 +160,12 @@ To test endpoints that require JWT authentication, you can generate a JWT token 
 
 ---
 
-**For more configuration details, see comments in `.env.example` and `docker-compose.yml`.**
+**For more configuration details, see comments in `.env-example` and `docker-compose.yml`.**
 
 ## Quick Start
 
 ```bash
-cp .env.example .env
+cp .env-example .env
 docker compose up --build
 ```
 - App: [http://localhost:8080](http://localhost:8080)
@@ -257,7 +257,7 @@ Spring's `@Cacheable` is used for in-memory caching of frequently accessed data 
 
 ## Environment Variables
 
-See [.env.example](.env.example)
+See [.env-example](.env-example)
 
 ---
 
