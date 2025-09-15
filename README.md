@@ -302,7 +302,8 @@ Queries exclude deleted sessions by default.
 
 ![img.png](img.png)
 > ![img_1.png](img_1.png)
->![img_4.png](img_4.png)
+> <img width="2940" height="1912" alt="image" src="https://github.com/user-attachments/assets/e19a8530-abb0-45a4-8827-0cbe7816f59e" />
+
 
 ---
 
