@@ -83,7 +83,7 @@ public class ChatMessageController {
                 .role(m.getRole())
                 .content(m.getContent())
                 .retrievedContext(includeContext ? JSONSerializerDeserializerUtil.deserialize(m.getRetrievedContext()) : null)
-                .metadata(includeMetadata ? JSONSerializerDeserializerUtil.deserialize(m.getMetadata().toString()) : null)
+                .metadata(includeMetadata ? JSONSerializerDeserializerUtil.deserialize(m.getMetadata()) : null)
                 .createdAt(m.getCreatedAt())
                 .build();
     }

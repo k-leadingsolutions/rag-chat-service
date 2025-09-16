@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 import java.util.Locale;
@@ -43,6 +44,7 @@ public class GlobalExceptionHandler {
         log.info("Translating key '{}' for locale '{}'", code, locale);
         return messageSource.getMessage(code, null, code, LocaleContextHolder.getLocale());
     }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest req) {
         String key = ex.getMessage();// Must be a valid translation key
@@ -51,10 +53,17 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.NOT_FOUND, key, translated, req.getRequestURI());
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest req) {
+        String msg = msg("exception.no.handler") + ": " + ex.getMessage();
+        log.warn("No Resource Found: {} ", msg);
+        return build(HttpStatus.NOT_FOUND, "NO_RESOURCE_FOUND", msg, req.getRequestURI());
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiErrorResponse> handleBadRequest(IllegalArgumentException ex, HttpServletRequest req) {
         log.warn("Bad request: {}", ex.getMessage());
-        String key = ex.getMessage(); // Should be a translation key or message
+        String key = ex.getMessage();
         return build(HttpStatus.BAD_REQUEST, "BAD_REQUEST", msg(key), req.getRequestURI());
     }
 
