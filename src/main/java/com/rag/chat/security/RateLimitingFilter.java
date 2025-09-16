@@ -1,5 +1,6 @@
 package com.rag.chat.security;
 
+import com.rag.chat.exception.RateLimitExceededException;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.ConsumptionProbe;
@@ -56,16 +57,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         Bucket bucket = buckets.computeIfAbsent(key,
                 k -> Bucket.builder().addLimit(bandwidth).build());
         ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
-
         if (!probe.isConsumed()) {
             long waitSeconds = (probe.getNanosToWaitForRefill() + 999_999_999) / 1_000_000_000;
-            response.setStatus(429);
-            response.setContentType("application/json");
-            response.setHeader("Retry-After", String.valueOf(waitSeconds));
-            response.setHeader("X-RateLimit-Remaining", "0");
-            response.getWriter().write("""
-                    {"status":429,"code":"RATE_LIMIT","message":"Rate limit exceeded"}""");
-            return;
+            throw new RateLimitExceededException(waitSeconds);
         }
 
         response.setHeader("X-RateLimit-Remaining", String.valueOf(probe.getRemainingTokens()));

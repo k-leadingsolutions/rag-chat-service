@@ -7,7 +7,7 @@ import com.rag.chat.dto.request.CreateMessageRequest;
 import com.rag.chat.dto.response.MessageResponse;
 import com.rag.chat.entity.ChatMessage;
 import com.rag.chat.entity.ChatSession;
-import com.rag.chat.entity.SenderType;
+import com.rag.chat.enums.SenderType;
 import com.rag.chat.service.ChatMessageService;
 import com.rag.chat.util.JSONSerializerDeserializerUtil;
 import org.junit.jupiter.api.BeforeEach;

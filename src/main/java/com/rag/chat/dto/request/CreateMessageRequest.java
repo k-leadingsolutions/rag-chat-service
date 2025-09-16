@@ -1,6 +1,6 @@
 package com.rag.chat.dto.request;
 
-import com.rag.chat.entity.SenderType;
+import com.rag.chat.enums.SenderType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

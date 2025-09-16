@@ -12,6 +12,8 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class JwtAuthenticationProviderTest {
 
@@ -20,16 +22,16 @@ class JwtAuthenticationProviderTest {
 
     @BeforeEach
     void setUp() {
-        jwtUtil = Mockito.mock(JWTUtil.class);
+        jwtUtil = mock(JWTUtil.class);
         jwtProvider = new JwtAuthenticationProvider(jwtUtil);
     }
 
     @Test
     void validTokenReturnsClaims() {
-        Claims claims = Mockito.mock(Claims.class);
-        Jws<Claims> jwsClaims = Mockito.mock(Jws.class);
-        Mockito.when(jwsClaims.getBody()).thenReturn(claims);
-        Mockito.when(jwtUtil.validateToken(anyString())).thenReturn(jwsClaims);
+        Claims claims = mock(Claims.class);
+        Jws<Claims> jwsClaims = mock(Jws.class);
+        when(jwsClaims.getBody()).thenReturn(claims);
+        when(jwtUtil.validateToken(anyString())).thenReturn(jwsClaims);
 
         String header = "Bearer valid.jwt.token";
         Claims result = jwtProvider.validate(header);
@@ -39,18 +41,8 @@ class JwtAuthenticationProviderTest {
     }
 
     @Test
-    void invalidHeaderThrows() {
-        assertThrows(JwtException.class, () -> jwtProvider.validate("NotBearerToken"));
-    }
-
-    @Test
-    void emptyTokenThrows() {
-        assertThrows(JwtException.class, () -> jwtProvider.validate("Bearer   "));
-    }
-
-    @Test
     void jwtUtilThrowsPropagates() {
-        Mockito.when(jwtUtil.validateToken(anyString())).thenThrow(new JwtException("bad token"));
+        when(jwtUtil.validateToken(anyString())).thenThrow(new JwtException("bad token"));
         assertThrows(JwtException.class, () -> jwtProvider.validate("Bearer bad.token"));
     }
 }

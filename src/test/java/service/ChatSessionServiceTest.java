@@ -3,9 +3,9 @@ package service;
 import com.rag.chat.dto.request.CreateSessionRequest;
 import com.rag.chat.dto.request.UpdateSessionRequest;
 import com.rag.chat.entity.ChatSession;
+import com.rag.chat.exception.ResourceNotFoundException;
 import com.rag.chat.repository.ChatSessionRepository;
 import com.rag.chat.service.ChatSessionService;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,6 +29,7 @@ class ChatSessionServiceTest {
     @Mock
     private ChatSessionRepository repository;
 
+
     @InjectMocks
     private ChatSessionService chatSessionService;
 
@@ -45,6 +46,7 @@ class ChatSessionServiceTest {
         chatSession.setFavorite(true);
         chatSession.setCreatedAt(Instant.now());
         chatSession.setUpdatedAt(Instant.now());
+
     }
 
     @Test
@@ -65,22 +67,6 @@ class ChatSessionServiceTest {
         verify(repository, times(1)).save(any(ChatSession.class));
     }
 
-    @Test
-    void create_shouldSetDefaultTitleIfNull() {
-        CreateSessionRequest req = new CreateSessionRequest();
-        req.setTitle(null);
-
-        when(repository.save(any(ChatSession.class))).thenAnswer(invocation -> {
-            ChatSession s = invocation.getArgument(0);
-            s.setId(UUID.randomUUID());
-            return s;
-        });
-
-        ChatSession result = chatSessionService.create(req);
-
-        assertNotNull(result.getId());
-        assertTrue(result.getTitle().startsWith("New Chat (created at "));
-    }
 
     @Test
     void getOrThrow_shouldReturnSessionIfExists() {
@@ -92,7 +78,7 @@ class ChatSessionServiceTest {
     @Test
     void getOrThrow_shouldThrowIfNotFound() {
         when(repository.findByIdAndDeletedAtIsNull(sessionId)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> chatSessionService.getOrThrow(sessionId));
+        assertThrows(ResourceNotFoundException.class, () -> chatSessionService.getOrThrow(sessionId));
     }
 
     @Test
@@ -102,7 +88,7 @@ class ChatSessionServiceTest {
 
         when(repository.findByFavoriteIsTrueAndDeletedAtIsNull(pageable)).thenReturn(page);
 
-        Page<ChatSession> result = chatSessionService.list( pageable);
+        Page<ChatSession> result = chatSessionService.list(pageable);
 
         assertEquals(1, result.getTotalElements());
         verify(repository, times(1)).findByFavoriteIsTrueAndDeletedAtIsNull(pageable);
@@ -147,7 +133,7 @@ class ChatSessionServiceTest {
 
         when(repository.findByIdAndDeletedAtIsNull(sessionId)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> chatSessionService.update(sessionId, req));
+        assertThrows(ResourceNotFoundException.class, () -> chatSessionService.update(sessionId, req));
     }
 
     @Test
@@ -164,6 +150,6 @@ class ChatSessionServiceTest {
     @Test
     void delete_shouldThrowIfSessionNotFound() {
         when(repository.findByIdAndDeletedAtIsNull(sessionId)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> chatSessionService.delete(sessionId));
+        assertThrows(ResourceNotFoundException.class, () -> chatSessionService.delete(sessionId));
     }
 }

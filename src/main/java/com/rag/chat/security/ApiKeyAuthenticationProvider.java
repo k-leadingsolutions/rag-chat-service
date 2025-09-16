@@ -12,6 +12,11 @@ public class ApiKeyAuthenticationProvider {
     @Getter
     private final String apiKeyHeaderName;
 
+    /**
+     * API Keys Handler
+     * @param validApiKeys
+     * @param apiKeyHeaderName
+     */
     public ApiKeyAuthenticationProvider(Set<String> validApiKeys, String apiKeyHeaderName) {
         this.validApiKeys = Collections.unmodifiableSet(validApiKeys);
         this.apiKeyHeaderName = apiKeyHeaderName != null ? apiKeyHeaderName : "x-api-key";

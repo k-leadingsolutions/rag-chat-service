@@ -13,7 +13,10 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class CorrelationIdFilter implements Filter {
-
+    /**
+     * API filter to add correlation-IDS
+     * for tracing and logging
+     */
     public static final String HEADER = "X-Request-Id";
 
     @Override

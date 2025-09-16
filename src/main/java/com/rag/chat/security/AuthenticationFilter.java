@@ -5,8 +5,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,9 +15,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 public class AuthenticationFilter extends OncePerRequestFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     private final JwtAuthenticationProvider jwtProvider;
     private final ApiKeyAuthenticationProvider apiKeyProvider;
@@ -66,7 +66,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                        ("rag-service".equalsIgnoreCase(service)) ||
                        ("rag".equalsIgnoreCase(service));
         } catch (Exception ex) {
-            logger.warn("JWT validation failed: {}", ex.getMessage());
+            log.warn("JWT validation failed: {} ", ex.getMessage());
         }
 
         // Validate API Key
@@ -82,19 +82,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                         new SimpleGrantedAuthority("ROLE_RAG_SERVICE")
                     ));
             SecurityContextHolder.getContext().setAuthentication(auth);
-            logger.info("Authentication successful: valid JWT and valid API key.");
+            log.info("Authentication successful: valid JWT and valid API key.");
             chain.doFilter(request, response);
         } else {
-            logger.warn("Authentication failed. JWT valid: {}, API key valid: {}", jwtValid, apiKeyValid);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("""
-                {
-                  "status":401,
-                  "code":"UNAUTHORIZED",
-                  "message":"Both a valid JWT and a valid API key are required for authentication."
-                }
-            """);
+            log.warn("Authentication failed. JWT valid: {}, API key valid: {}", jwtValid, apiKeyValid);
+            throw new BadCredentialsException("Invalid JWT or API key");
         }
     }
 

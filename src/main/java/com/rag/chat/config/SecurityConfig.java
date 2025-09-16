@@ -5,6 +5,9 @@ import com.rag.chat.security.AuthenticationFilter;
 import com.rag.chat.security.JwtAuthenticationProvider;
 import com.rag.chat.security.RateLimitingFilter;
 import com.rag.chat.util.JWTUtil;
+import com.rag.chat.util.Translator;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +20,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,6 +46,13 @@ public class SecurityConfig {
      * JwtAuthenticationProvider Filter
      * @return
      */
+
+    private final Translator translator;
+
+    public SecurityConfig(Translator translator) {
+        this.translator = translator;
+    }
+
     @Bean
     public JwtAuthenticationProvider jwtAuthenticationProvider(JWTUtil jwtUtil) {
         return new JwtAuthenticationProvider(jwtUtil);
@@ -107,21 +119,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/**").hasAnyAuthority("ROLE_API_CLIENT", "ROLE_RAG_SERVICE")
                         .anyRequest().denyAll()
-                )
-                .exceptionHandling(ex -> ex
+                )   .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, res, e) -> {
-                            res.setStatus(401);
-                            res.setContentType("application/json");
-                            res.getWriter().write("""
-                        {"status":401,"code":"UNAUTHORIZED","message":"Authentication required"}""");
+                            sendLocalizedError(res, req, 401, "UNAUTHORIZED", "auth.required");
                         })
                         .accessDeniedHandler((req, res, e) -> {
-                            res.setStatus(403);
-                            res.setContentType("application/json");
-                            res.getWriter().write("""
-                        {"status":403,"code":"FORBIDDEN","message":"Access denied"}""");
-                        })
-                )
+                            sendLocalizedError(res, req, 403, "FORBIDDEN", "auth.denied");
+                        }))
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
@@ -132,4 +136,15 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    private void sendLocalizedError(HttpServletResponse res, HttpServletRequest req, int status, String code, String msgKey) throws IOException {
+        Locale locale = Translator.getLocaleFromRequest(req);
+        String msg = translator.toLocale(msgKey, locale);
+        res.setStatus(status);
+        res.setContentType("application/json; charset=UTF-8");
+        res.getWriter().write(
+                String.format("{\"status\":%d,\"code\":\"%s\",\"message\":\"%s\"}", status, code, msg)
+        );
+    }
+
 }
