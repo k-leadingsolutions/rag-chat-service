@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Messages", description = "Endpoints for managing chat messages")
@@ -37,15 +38,21 @@ public class ChatMessageController {
             summary = "Create a message in a session",
             security = { @SecurityRequirement(name = "bearerAuth"), @SecurityRequirement(name = "internalApiKey") }
     )
-    @PreAuthorize("hasAnyRole('USER','ADMIN','API_CLIENT')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN','AI')")
     @PostMapping
-    public MessageResponse create(@PathVariable UUID sessionId,
-                                  @Valid @RequestBody CreateMessageRequest req) {
-        ChatMessage message = service.create(sessionId, req);
+    public List<MessageResponse> create(@PathVariable UUID sessionId,
+                                  @Valid @RequestBody List<CreateMessageRequest> requests) {
+
+       List<ChatMessage> messages = service.create(sessionId, requests);
+
+
         if (log.isDebugEnabled()) {
-            log.debug("Created message id={} sessionId={} role={}", message.getId(), sessionId, message.getRole());
+            log.debug("Created messages successfuly");
         }
-        return toResponse(message, true, true);
+
+        return  messages.stream()
+                        .map(msg -> toResponse(msg, true, true))
+                                .toList();
     }
 
     @Operation(
@@ -53,7 +60,7 @@ public class ChatMessageController {
             description = "Ascending order by createdAt; page-based pagination",
             security = { @SecurityRequirement(name = "bearerAuth"), @SecurityRequirement(name = "internalApiKey") }
     )
-    @PreAuthorize("hasAnyRole('USER','ADMIN','API_CLIENT')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN','AI')")
     @GetMapping
     public PageResponse<MessageResponse> list(@PathVariable UUID sessionId,
                                               @RequestParam(defaultValue = "0") @Min(0) int page,

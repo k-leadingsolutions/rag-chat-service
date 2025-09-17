@@ -17,7 +17,7 @@ CREATE TABLE chat_session (
 CREATE TABLE chat_message (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     session_id UUID NOT NULL,
-    role VARCHAR(20) NOT NULL CHECK (role IN ('USER', 'ASSISTANT', 'SYSTEM')),
+    role VARCHAR(20) NOT NULL CHECK (role IN ('USER', 'ASSISTANT', 'SYSTEM', 'AI')),
     content TEXT NOT NULL,
     retrieved_context TEXT,
     metadata TEXT,

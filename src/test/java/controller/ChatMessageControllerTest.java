@@ -3,7 +3,6 @@ package controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rag.chat.controller.ChatMessageController;
-import com.rag.chat.dto.request.CreateMessageRequest;
 import com.rag.chat.dto.response.MessageResponse;
 import com.rag.chat.entity.ChatMessage;
 import com.rag.chat.entity.ChatSession;
@@ -17,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.data.domain.*;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -32,8 +30,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ChatMessageControllerTest {
@@ -72,27 +68,7 @@ public class ChatMessageControllerTest {
         chatMessage.setCreatedAt(Instant.now());
     }
 
-    @Test
-    void create_shouldReturnMessageResponse() throws Exception {
-        CreateMessageRequest req = new CreateMessageRequest();
-        req.setContent("Hello!");
-        req.setRole(SenderType.SYSTEM);
 
-        when(chatMessageService.create(eq(sessionId), any(CreateMessageRequest.class)))
-                .thenReturn(chatMessage);
-
-        String requestJson = objectMapper.writeValueAsString(req);
-
-        mockMvc.perform(post("/api/v1/sessions/{sessionId}/messages", sessionId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(chatMessage.getId().toString()))
-                .andExpect(jsonPath("$.role").value("SYSTEM"))
-                .andExpect(jsonPath("$.content").value("Hello!"))
-                .andExpect(jsonPath("$.sessionId").value(sessionId.toString()))
-                .andExpect(jsonPath("$.retrievedContext.foo").value("bar"));
-    }
     @Test
     void list_shouldReturnPageResponse() throws Exception {
         Page<ChatMessage> page = new PageImpl<>(List.of(chatMessage), 

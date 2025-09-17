@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -63,10 +64,10 @@ class ChatMessageServiceTest {
 
         when(messageRepository.save(any(ChatMessage.class))).thenReturn(savedMessage);
 
-        ChatMessage result = chatMessageService.create(sessionId, req);
+        List<ChatMessage> result = chatMessageService.create(sessionId, List.of(req));
 
         assertNotNull(result);
-        assertEquals(savedMessage.getId(), result.getId());
+        assertEquals(savedMessage.getId(), result.get(0).getId());
 
         ArgumentCaptor<ChatMessage> captor = ArgumentCaptor.forClass(ChatMessage.class);
         verify(messageRepository).save(captor.capture());
@@ -81,7 +82,7 @@ class ChatMessageServiceTest {
 
         when(sessionRepository.findByIdAndDeletedAtIsNull(sessionId)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> chatMessageService.create(sessionId, req));
+        assertThrows(ResourceNotFoundException.class, () -> chatMessageService.create(sessionId, List.of(req)));
     }
 
     @Test
@@ -91,7 +92,7 @@ class ChatMessageServiceTest {
 
         when(sessionRepository.findByIdAndDeletedAtIsNull(sessionId)).thenReturn(Optional.of(session));
 
-        assertThrows(IllegalArgumentException.class, () -> chatMessageService.create(sessionId, req));
+        assertThrows(IllegalArgumentException.class, () -> chatMessageService.create(sessionId,List.of(req)));
     }
 
     @Test
@@ -101,7 +102,7 @@ class ChatMessageServiceTest {
 
         when(sessionRepository.findByIdAndDeletedAtIsNull(sessionId)).thenReturn(Optional.of(session));
 
-        assertThrows(IllegalArgumentException.class, () -> chatMessageService.create(sessionId, req));
+        assertThrows(IllegalArgumentException.class, () -> chatMessageService.create(sessionId,List.of(req)));
     }
 
 

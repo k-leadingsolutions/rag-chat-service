@@ -14,6 +14,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.rag.chat.util.JSONSerializerDeserializerUtil.serialize;
@@ -29,35 +31,47 @@ public class ChatMessageService {
     /**
      * Get a chat message by sessionId
      * @param sessionId
-     * @param req
+     * @param reqList
      * @return
      */
     @Transactional
     @CacheEvict(value = "chatMessages", allEntries = true)
     @LogExecution(includeArgs = true, includeResult = false, warnThresholdMs = 500)
-    public ChatMessage create(UUID sessionId, CreateMessageRequest req) {
-        SecurityService.sanitizeInput(req.getContent());
+    public List<ChatMessage> create(UUID sessionId, List<CreateMessageRequest> reqList) {
+        if (reqList == null || reqList.isEmpty()) {
+            throw new IllegalArgumentException("Message request list cannot be empty");
+        }
+
+        // Validate all requests first
+        for (CreateMessageRequest r : reqList) {
+            SecurityService.sanitizeInput(r.getContent());
+            if (r.getRole() == null || r.getRole().name().isBlank()) {
+                throw new IllegalArgumentException("Role Required");
+            }
+            if (r.getContent() == null || r.getContent().isBlank()) {
+                throw new IllegalArgumentException("Message Content Required");
+            }
+        }
 
         ChatSession session = sessionRepository.findByIdAndDeletedAtIsNull(sessionId)
-                .orElseThrow(() -> new ResourceNotFoundException("session.not.found")); // changed here
+                .orElseThrow(() -> new ResourceNotFoundException("session.not.found"));
 
-        if (req.getRole() == null || req.getRole().name().isBlank()) {
-            throw new IllegalArgumentException("Role Required");
+        List<ChatMessage> savedMessages = new ArrayList<>();
+        for (CreateMessageRequest r : reqList) {
+            ChatMessage message = getChatMessage(r, session);
+            message = messageRepository.save(message);
+            savedMessages.add(message);
+
+            // Update session's updatedAt if needed
+            if (!session.getUpdatedAt().equals(message.getCreatedAt())) {
+                session.setUpdatedAt(message.getCreatedAt());
+                sessionRepository.save(session);
+            }
+
+            log.info("Created message with ID: {} for session ID: {}", message.getId(), sessionId);
         }
-        if (req.getContent() == null || req.getContent().isBlank()) {
-            throw new IllegalArgumentException("Message Content Required");
-        }
 
-        ChatMessage message = getChatMessage(req, session);
-        message = messageRepository.save(message);
-
-        if (!session.getUpdatedAt().equals(message.getCreatedAt())) {
-            session.setUpdatedAt(message.getCreatedAt());
-            sessionRepository.save(session);
-        }
-
-        log.info("Created message with ID: {} for session ID: {}", message.getId(), sessionId);
-        return message;
+        return savedMessages;
     }
 
     /**
