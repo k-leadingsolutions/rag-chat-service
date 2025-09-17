@@ -272,6 +272,7 @@ Flyway auto-runs migrations under `src/main/resources/db/migration`.
 Sessions are soft-deleted (timestamp in `deleted_at`).  
 Messages remain (or can be cascaded with logic if needed).  
 Queries exclude deleted sessions by default.
+Future Implementation Clean up Scheduler
 
 ---
 
