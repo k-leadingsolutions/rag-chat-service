@@ -301,8 +301,8 @@ Future Implementation Clean up Scheduler
 
 ## Demo / Screenshots
 
-[View Screenshot 1](img.png)  
-[View Screenshot 2](img_1.png)  
+[View Screenshot 1](src/main/resources/assets/img.png)  
+[View Screenshot 2](src/main/resources/assets/img_1.png)  
 [View Large Image](https://github.com/user-attachments/assets/e19a8530-abb0-45a4-8827-0cbe7816f59e)
 
 ---
