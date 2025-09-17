@@ -15,7 +15,7 @@ public class CorsConfig {
     @Value("${spring.web.cors.allowed-origins:http://localhost:3000}")
     private String allowedOrigins;
 
-    @Value("${spring.web.cors.allowed-methods:GET,POST,PUT,DELETE,OPTIONS}")
+    @Value("${spring.web.cors.allowed-methods:GET,POST,PUT,PATCH,DELETE,OPTIONS}")
     private String allowedMethods;
 
     @Value("${spring.web.cors.allowed-headers:Authorization,Content-Type,X-Request-Id}")
