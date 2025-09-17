@@ -18,7 +18,8 @@ public class CorsConfig {
     @Value("${spring.web.cors.allowed-methods:GET,POST,PUT,PATCH,DELETE,OPTIONS}")
     private String allowedMethods;
 
-    @Value("${spring.web.cors.allowed-headers:Authorization,Content-Type,X-Request-Id}")
+    // Include all headers you send from frontend!
+    @Value("${spring.web.cors.allowed-headers:Authorization,Content-Type,X-Request-Id,x-api-key,X-Api-Key,Accept-Language}")
     private String allowedHeaders;
 
     @Value("${spring.web.cors.exposed-headers:X-RateLimit-Limit,X-RateLimit-Remaining,Retry-After}")
@@ -27,10 +28,6 @@ public class CorsConfig {
     @Value("${spring.web.cors.allow-credentials:true}")
     private boolean allowCredentials;
 
-    /**
-     * Cors Filter to handle cross-origin
-     * @return
-     */
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
