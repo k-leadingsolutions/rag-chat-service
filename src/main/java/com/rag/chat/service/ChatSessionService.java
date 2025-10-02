@@ -68,7 +68,7 @@ public class ChatSessionService {
     @Transactional(readOnly = true)
     @LogExecution(includeArgs = true, includeResult = false, warnThresholdMs = 500)
     public Page<ChatSession> list(Pageable pageable) {
-        return repository.findByFavoriteIsTrueAndDeletedAtIsNull(pageable);
+        return repository.findByDeletedAtIsNull(pageable);
     }
 
     /**

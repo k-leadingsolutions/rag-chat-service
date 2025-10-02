@@ -86,12 +86,12 @@ class ChatSessionServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<ChatSession> page = new PageImpl<>(List.of(chatSession), pageable, 1);
 
-        when(repository.findByFavoriteIsTrueAndDeletedAtIsNull(pageable)).thenReturn(page);
+        when(repository.findByDeletedAtIsNull(pageable)).thenReturn(page);
 
         Page<ChatSession> result = chatSessionService.list(pageable);
 
         assertEquals(1, result.getTotalElements());
-        verify(repository, times(1)).findByFavoriteIsTrueAndDeletedAtIsNull(pageable);
+        verify(repository, times(1)).findByDeletedAtIsNull(pageable);
     }
 
     @Test

@@ -26,15 +26,4 @@ public class ChatSession extends BaseEntity {
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    public void markDeleted() {
-        this.deletedAt = Instant.now();
-    }
-
-    public void rename(String newTitle) {
-        this.title = newTitle;
-    }
-
-    public void toggleFavorite(boolean value) {
-        this.favorite = value;
-    }
 }

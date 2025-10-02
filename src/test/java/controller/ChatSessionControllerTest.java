@@ -121,7 +121,7 @@ class ChatSessionControllerTest {
 
         String requestJson = objectMapper.writeValueAsString(req);
 
-        mockMvc.perform(patch("/api/v1/sessions/{id}", sessionId)
+        mockMvc.perform(put("/api/v1/sessions/{id}", sessionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())

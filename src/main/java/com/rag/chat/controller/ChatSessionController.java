@@ -89,7 +89,7 @@ public class ChatSessionController {
             security = {@SecurityRequirement(name = "bearer_jwt"), @SecurityRequirement(name = "api_key")}
     )
     @PreAuthorize("@sessionAccess.canWrite(authentication, #id)")
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public SessionResponse update(@PathVariable UUID id,
                                   @Valid @RequestBody UpdateSessionRequest req) {
         ChatSession updated = service.update(id, req);
@@ -118,7 +118,7 @@ public class ChatSessionController {
             security = {@SecurityRequirement(name = "bearer_jwt"), @SecurityRequirement(name = "api_key")}
     )
     @PreAuthorize("@sessionAccess.canWrite(authentication, #id)")
-    @PutMapping("/{id}/favorite")
+    @PatchMapping("/{id}/favorite")
     public SessionResponse toggleFavorite(@PathVariable UUID id) {
         ChatSession updated = service.toggleFavorite(id);
         if (log.isDebugEnabled()) {
